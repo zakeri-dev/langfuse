@@ -61,9 +61,6 @@ services:
       REDIS_TLS_CA: ${REDIS_TLS_CA:-/certs/ca.crt}
       REDIS_TLS_CERT: ${REDIS_TLS_CERT:-/certs/redis.crt}
       REDIS_TLS_KEY: ${REDIS_TLS_KEY:-/certs/redis.key}
-    networks:
-      - traefik
-      - default
 
   langfuse-web:
     image: langfuse/langfuse:3
@@ -84,18 +81,6 @@ services:
       LANGFUSE_INIT_USER_EMAIL: ${LANGFUSE_INIT_USER_EMAIL:-}
       LANGFUSE_INIT_USER_NAME: ${LANGFUSE_INIT_USER_NAME:-}
       LANGFUSE_INIT_USER_PASSWORD: ${LANGFUSE_INIT_USER_PASSWORD:-}
-    networks:
-      - traefik
-      - default
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.langfuse.rule=Host(`b-langfuse.lmh.clinic`)
-      - traefik.http.routers.langfuse.entrypoints=websecure
-      - traefik.http.routers.langfuse.tls=true
-      - traefik.http.routers.langfuse.tls.certresolver=letsencrypt
-      - traefik.http.services.langfuse.loadbalancer.server.port=3000
-      - traefik.http.middlewares.langfuse-compress.compress=true
-      - traefik.http.routers.langfuse.middlewares=langfuse-compress
 
   clickhouse:
     image: clickhouse/clickhouse-server
@@ -117,9 +102,6 @@ services:
       timeout: 5s
       retries: 10
       start_period: 1s
-    networks:
-      - traefik
-      - default
 
   minio:
     image: minio/minio
@@ -141,9 +123,6 @@ services:
       timeout: 5s
       retries: 5
       start_period: 1s
-    networks:
-      - traefik
-      - default
 
   redis:
     image: redis:7
@@ -158,9 +137,6 @@ services:
       interval: 3s
       timeout: 10s
       retries: 10
-    networks:
-      - traefik
-      - default
 
   langfuse-postgres:
     image: postgres:${POSTGRES_VERSION:-latest}
@@ -178,9 +154,6 @@ services:
       - 127.0.0.1:5432:5432
     volumes:
       - langfuse_postgres_data:/var/lib/postgresql/data
-    networks:
-      - traefik
-      - default
 
 volumes:
   langfuse_postgres_data:
@@ -191,9 +164,3 @@ volumes:
     driver: local
   langfuse_minio_data:
     driver: local
-
-networks:
-  traefik:
-    external: true
-  default:
-    driver: bridge
