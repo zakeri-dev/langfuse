@@ -63,7 +63,6 @@ services:
       REDIS_TLS_KEY: ${REDIS_TLS_KEY:-/certs/redis.key}
     networks:
       - traefik
-      - default
 
   langfuse-web:
     image: langfuse/langfuse:3
@@ -86,7 +85,6 @@ services:
       LANGFUSE_INIT_USER_PASSWORD: ${LANGFUSE_INIT_USER_PASSWORD:-}
     networks:
       - traefik
-      - default
     labels:
       - traefik.enable=true
       - traefik.http.routers.langfuse.rule=Host(`b-langfuse.lmh.clinic`)
@@ -119,7 +117,6 @@ services:
       start_period: 1s
     networks:
       - traefik
-      - default
 
   minio:
     image: minio/minio
@@ -143,7 +140,6 @@ services:
       start_period: 1s
     networks:
       - traefik
-      - default
 
   redis:
     image: redis:7
@@ -160,7 +156,6 @@ services:
       retries: 10
     networks:
       - traefik
-      - default
 
   langfuse-postgres:
     image: postgres:${POSTGRES_VERSION:-latest}
@@ -180,7 +175,6 @@ services:
       - langfuse_postgres_data:/var/lib/postgresql/data
     networks:
       - traefik
-      - default
 
 volumes:
   langfuse_postgres_data:
@@ -195,5 +189,3 @@ volumes:
 networks:
   traefik:
     external: true
-  default:
-    driver: bridge
